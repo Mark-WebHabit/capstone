@@ -40,7 +40,6 @@ export const refreshAccessToken = asyncHandler(async (req, res) => {
           { userId },
           process.env.ACCESS_TOKEN_SECRET
         );
-        console.log("token refreshed");
         return res.status(201).json({ token: newAccessToken, email });
       }
     }

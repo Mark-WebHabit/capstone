@@ -43,13 +43,19 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ extended: true }));
 
+app.get("/", (req, res) => {
+  res.send(
+    `<h1>Nothing to see here</h1></br><a href="https://holyangels.onrender.com">Go to home</a>`
+  );
+});
+
 app.get("/email-verify", (req, res) => {
   res.render("email_verified");
 });
 
 // auth
 // public access
-process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
+// process.env["NODE_TLS_REJECT_UNAUTHORIZED"] = 0;
 app.use("/auth", authRoutes);
 
 // put middleware to these route that check for access token
@@ -67,8 +73,5 @@ mongoose
     useUnifiedTopology: true,
   })
   .then(() => {
-    app.listen(PORT, () => {
-      console.log(`Server running on 🚀 http://localhost:${PORT}...`);
-    });
-  })
-  .catch((error) => console.log(error));
+    app.listen(PORT);
+  });

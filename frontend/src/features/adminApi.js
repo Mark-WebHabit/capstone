@@ -5,8 +5,6 @@ import {
   throwError,
   authenticatedRequestPostAndPatch,
 } from "../utility/restApiUtilitis.js";
-import { instance } from "../app/instance.js";
-import restApiSlice from "./restApiSlice.js";
 
 const initialState = {
   error: null,
@@ -214,7 +212,6 @@ const adminRestApiSlice = createSlice({
       .addCase(getTableinfo.rejected, (state, action) => {
         state.error = action.error.message;
         state.fetchingStatus = "idle";
-        console.log(action.error.message);
       })
       .addCase(getSearchDeceaseds.pending, (state, action) => {
         state.fetchingStatus = "loading";
@@ -230,9 +227,6 @@ const adminRestApiSlice = createSlice({
       .addCase(updatePlotNotWithInterment.rejected, (state, action) => {
         state.error = action.error.message;
       })
-      // .addCase(updateInterment.fulfilled, (state, action) => {
-      //   console.log(action.payload.data);
-      // })
       .addCase(updateInterment.rejected, (state, action) => {
         state.error = action.error.message;
       })
@@ -248,12 +242,8 @@ const adminRestApiSlice = createSlice({
       .addCase(searchForGuests.rejected, (state, action) => {
         state.error = action.error.message;
       })
-      .addCase(assignRoleToEmployee.fulfilled, (state, action) => {
-        console.log(action.payload.data);
-      })
       .addCase(assignRoleToEmployee.rejected, (state, action) => {
         state.error = action.error.message;
-        console.log(action.error.message);
       });
   },
 });

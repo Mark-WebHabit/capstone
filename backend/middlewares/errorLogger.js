@@ -10,7 +10,6 @@ export const errorLogger = (err, req, res, next) => {
     if (!err) {
       return next();
     }
-    console.log(err);
 
     // Determine the HTTP status code for the error response
     const status = res.statusCode === 200 ? 500 : res.statusCode;

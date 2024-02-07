@@ -10,18 +10,17 @@ import {
 import LoadingScreen from "./LoadingScreen";
 
 const Lawn1 = ({ selectedPlot, setSelectedPlot, map }) => {
-  const lawn1ContainerRef = useRef();
-  const lawn1Ref = useRef();
+  const lawn1ContainerRef = useRef(0);
+  const lawn1Ref = useRef(0);
 
   // push the divs directly to this array instead of passing it in a ref
   const plotArr = [];
+  const dispatch = useDispatch();
+  const areaPlots = useSelector((state) => state.restApi.areaPlots); // if this is empty meaning it is still fetching so the area shuldnt be displayed
+  const [lawn1Plots, setLawn1Plots] = useState(null);
 
   const [showLawnContainer, setShowLawnContainer] = useState(false);
   const [showPlots, setShowPlots] = useState(false);
-  const [lawn1Plots, setLawn1Plots] = useState(null);
-
-  const dispatch = useDispatch();
-  const areaPlots = useSelector((state) => state.restApi.areaPlots); // if this is empty meaning it is still fetching so the area shuldnt be displayed
 
   const [plotSize, setPlotSize] = useState({
     width: 0,
@@ -67,6 +66,19 @@ const Lawn1 = ({ selectedPlot, setSelectedPlot, map }) => {
     };
   }, [lawn1Ref.current]);
 
+  // fetching the specific lawn in the database
+  useEffect(() => {
+    const fetchLawn = async () => {
+      if (lawn1ContainerRef.current) {
+        await dispatch(getLawn("Lawn1"));
+      }
+    };
+
+    fetchLawn();
+  }, [lawn1ContainerRef]);
+
+  const lawn1PlotRow1 = Array.from({ length: 12 }, (_, index) => 205 + index);
+
   // rendering the divs that represent the plots
   const renderRow = (arr, plotNum) => {
     return (
@@ -80,10 +92,10 @@ const Lawn1 = ({ selectedPlot, setSelectedPlot, map }) => {
       >
         {arr.map((plot, index) => (
           <Plot
+            data-name={plotNum + index}
             ref={(element) => {
               plotArr.push(element);
             }}
-            data-name={plotNum + index}
             key={index}
             $width={plotSize.width}
             onClick={(e) => {
@@ -96,17 +108,6 @@ const Lawn1 = ({ selectedPlot, setSelectedPlot, map }) => {
     );
   };
 
-  // fetching the specific lawn in the database
-  useEffect(() => {
-    const fetchLawn = async () => {
-      if (lawn1ContainerRef.current) {
-        await dispatch(getLawn("Lawn1"));
-      }
-    };
-
-    fetchLawn();
-  }, [lawn1ContainerRef]);
-
   // // get the plots that belong to this lawn and store it in a state
   useEffect(() => {
     // the area plot fetched were based on the active selected area type so no validation were made
@@ -116,7 +117,7 @@ const Lawn1 = ({ selectedPlot, setSelectedPlot, map }) => {
   // listen if the state that hollds the plots that belong to this lawn is already set
   // if the plotName matches the data-name of div set the id to the status of plot in the db
   useEffect(() => {
-    if (lawn1Plots && lawn1Plots.length && plotArr) {
+    if (lawn1Plots && lawn1Plots.length && plotArr.length) {
       plotArr.forEach((plot) => {
         const matched = lawn1Plots.find(
           (el) => el.plotName == plot.getAttribute("data-name")
@@ -127,10 +128,10 @@ const Lawn1 = ({ selectedPlot, setSelectedPlot, map }) => {
         }
       });
     }
-  }, [lawn1Plots]);
+  }, [lawn1Plots, plotArr]);
 
   useEffect(() => {
-    if (lawn1Plots && lawn1Plots.length && plotArr) {
+    if (lawn1Plots && lawn1Plots.length && plotArr.length) {
       if (selectedPlot || map) {
         plotArr.forEach((plot) => {
           if (plot.getAttribute("data-name") == selectedPlot) {
@@ -154,9 +155,7 @@ const Lawn1 = ({ selectedPlot, setSelectedPlot, map }) => {
         });
       }
     }
-  }, [lawn1Plots, selectedPlot, map]);
-
-  const lawn1PlotRow1 = Array.from({ length: 12 }, (_, index) => 205 + index);
+  }, [lawn1Plots, selectedPlot, map, plotArr]);
 
   if (!areaPlots) {
     return <LoadingScreen />;
@@ -208,7 +207,7 @@ export default Lawn1;
 const Main = styled.div`
   height: 100%;
   width: 100%;
-  background-color: #f2f2f8;
+  background-color: transparent;
   z-index: 1;
 `;
 

@@ -1,17 +1,17 @@
 import nodemailer from "nodemailer";
 import asyncHandler from "express-async-handler";
 
-export const sendEmail = asyncHandler(async function (email, subject, text) {
-  const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.USER,
-      pass: process.env.PASS,
-    },
-  });
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  port: 587,
+  secure: true,
+  auth: {
+    user: process.env.USER,
+    pass: process.env.PASS,
+  },
+});
 
+export const sendEmail = asyncHandler(async function (email, subject, text) {
   const html = `
     <html>
   <head>
@@ -63,16 +63,6 @@ export const validatePasswordRenewal = asyncHandler(async function (
   subject,
   text
 ) {
-  const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.USER,
-      pass: process.env.PASS,
-    },
-  });
-
   const html = `
     <html>
   <head>
@@ -125,16 +115,6 @@ export const sendEmailViaContact = asyncHandler(async function (
   subject,
   message
 ) {
-  const transporter = nodemailer.createTransport({
-    service: "Gmail",
-    port: 587,
-    secure: false,
-    auth: {
-      user: process.env.USER,
-      pass: process.env.PASS,
-    },
-  });
-
   const html = `
     <html>
   <head>

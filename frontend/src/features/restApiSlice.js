@@ -373,7 +373,6 @@ const restApiSlice = createSlice({
         state.areaPlotsLoading = "loading";
       })
       .addCase(getAreaPlots.fulfilled, (state, action) => {
-        // console.log(action.payload.data);
         state.areaPlots = action.payload?.data || [];
         state.areaPlotsLoading = "fetched";
       })
